@@ -1,9 +1,47 @@
-#poker-hand {
-  display: flex;
+h1 {
+  text-align: center;
+  border: 3px solid green;
 }
 
-.card {
-  width: 100px;
-  height: 150px;
-  margin-right: 10px;
+/* #poker {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}  */
+
+
+#handButton {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  border-radius: 25px; 
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  
+}
+
+#handDisplay {
+  padding-top: 25px;
+  text-align: center;
+}
+
+#handDisplay img {
+  margin-right: 5px; 
+}
+
+#handDisplay img:nth-child(2n) {
+  margin-right: 100px; 
+}
+
+#cardContainer {
+  text-align: center;
+  padding-top: 50px;
+}
+
+#flopDisplay, #turnDisplay, #riverDisplay {
+  display: inline;
+  
 }

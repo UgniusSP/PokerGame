@@ -1,22 +1,24 @@
 // poker logic
 
-var deck;
-var hand;
+var deck = [];
+var playerNumber = 3;
+var handLength = 2*playerNumber;
+var hand = [];
 
 function createDeck() {
     const suits = ["hearts", "diamonds", "clubs", "spades"];
     const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace"];
 
-    deck = [];
+    tmp = [];
     let card = 0;
     for(let i = 0; i < suits.length; i++){
         for(let j = 0; j < ranks.length; j++){
             let card = `${ranks[j]}_of_${suits[i]}`;
-            deck.push(card);
+            tmp.push(card);
         }
     }
-    //console.log(deck);
-    return deck;
+    
+    return tmp;
 }
 
 function shuffle(deck){
@@ -28,40 +30,67 @@ function shuffle(deck){
 		deck[location1] = deck[location2];
 		deck[location2] = tmp;
     }
-    
 }
 
-function dealCards(deck){
-    hand = new Array(2);
-    for(let i = 0; i < 2; i++){
+function dealCards(){
+    deck = createDeck();
+    shuffle(deck);
+
+    for(let i = 0; i < handLength; i++){
         hand[i] = deck.pop();
     }
     return hand;
 }
 
-function renderHand(hand){
-    const handDisplay = document.getElementById('handDisplay');
-    handDisplay.innerHTML = ''; // Clear previous content
+function renderCards(displayId, numberOfCards, cardAction) {
+    const display = document.getElementById(displayId);
+    display.innerHTML = '';
 
-    for (let i = 0; i < hand.length; i++) {
+    for (let i = 0; i < numberOfCards; i++) {
+        const tmp = cardAction(); 
         const cardImage = document.createElement('img');
-        cardImage.src = `playCards/${hand[i]}.svg`; // Assuming images are in the "cards" directory
-        cardImage.alt = hand[i];
-        cardImage.width = 100; // Set the desired width
+        cardImage.src = `playCards/${tmp}.svg`; 
+        cardImage.alt = tmp;
+        cardImage.width = 100; 
 
-        handDisplay.appendChild(cardImage);
+        display.appendChild(cardImage);
     }
 }
 
-function startGame(){
-    deck = createDeck();
-    shuffle(deck);
-    hand = [];
+function renderHand(){
+
     hand = dealCards(deck);
-    
     console.log(hand);
 
-    renderHand(hand);
+    renderCards('handDisplay', hand.length, () => deck.shift());
+}
+
+function renderFlop(){
+    deck.pop();
+
+    renderCards('flopDisplay', 3, () => deck.pop());
+}
+
+function renderTurn(){
+    deck.pop();
+
+    renderCards('turnDisplay', 1, () => deck.pop());
+}
+
+function renderRiver(){
+    deck.pop();
+
+    renderCards('riverDisplay', 1, () => deck.pop());
+}
+
+function startGame(){
+    
+    renderHand();
+    console.log(deck);
+    renderFlop();
+    console.log(deck);
+    renderTurn();
+    renderRiver();
 }
 
 

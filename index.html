@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="game.js"></script>
+    
     <title>Poker Hand Display</title>
 </head>
 <body id="poker">
     <h1>Poker Game</h1>
-    <button onclick="startGame()">Hand</button>
+    <button id="handButton" onclick="startGame()">Hand</button>
     <div id="handDisplay"></div>
+    <div id="cardContainer">
+        <div id="flopDisplay"></div>
+        <div id="turnDisplay"></div>
+        <div id="riverDisplay"></div>
+    </div>
+    <script src="game.js"></script>
 </body>
 </html>
