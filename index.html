@@ -9,13 +9,24 @@
 </head>
 <body id="poker">
     <h1>Poker Game</h1>
-    <button id="handButton" onclick="startGame()">Hand</button>
+    <button id="handButton" onclick="pokerGame.startGame()">Start</button>
+    <button id="callButton" onclick="pokerGame.renderFlop()">Call</button> 
+    <form id="myForm">
+        <label for="numberInput">Raise:</label>
+        <input type="number" id="raiseInput" step="500">
+        <button type="submit">Raise</button>
+    </form>
+    <div id="bankDisplay">Chips: <span id="chipCount"></span>
+        
+    </div>
     <div id="handDisplay"></div>
     <div id="cardContainer">
         <div id="flopDisplay"></div>
         <div id="turnDisplay"></div>
         <div id="riverDisplay"></div>
     </div>
-    <script src="game.js"></script>
+    <script src="bets.js"></script>
+    <script src="cards.js"></script>
+    
 </body>
 </html>
