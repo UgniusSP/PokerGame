@@ -44,48 +44,7 @@ class Cards {
         console.log(hand)
         return hand;
     }
-
-    renderCards(displayId, numberOfCards, cardAction) {
-        const display = document.getElementById(displayId);
-        display.innerHTML = '';
     
-        for (let i = 0; i < numberOfCards; i++) {
-            const tmp = cardAction(i); 
-            const cardImage = document.createElement('img');
-            cardImage.src = `playCards/${tmp}.svg`; 
-            cardImage.alt = tmp;
-            cardImage.width = 100; 
-    
-            display.appendChild(cardImage);
-        }
-    }
-    
-    renderHand() {
-        this.hand = this.dealCards()
-    
-        this.renderCards('handDisplay', 2, (i) => this.hand[i]);
-    }
-    
-    renderFlop() {
-        this.deck.pop();
-    
-        this.renderCards('flopDisplay', 3, () => this.deck.pop());
-    }
-    
-    renderTurn() {
-        this.deck.pop();
-    
-        this.renderCards('turnDisplay', 1, () => this.deck.pop());
-    }
-    
-    renderRiver() {
-        this.deck.pop();
-    
-        this.renderCards('riverDisplay', 1, () => this.deck.pop());
-    }
-
 }
 
-const pokergame = new Cards();
-pokergame.renderHand();
 
