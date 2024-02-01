@@ -1,7 +1,5 @@
-class pokerGame {
-    constructor(playerNumber) {
-        this.playerNumber = playerNumber;
-        this.handLength = 2 * playerNumber;
+class Cards {
+    constructor() {
         this.deck = [];
         this.hand = [];
     }
@@ -33,14 +31,18 @@ class pokerGame {
     }
 
     dealCards() {
-        this.deck = this.createDeck();
-        this.shuffle();
-
-        for (let i = 0; i < this.handLength; i++) {
-            this.hand[i] = this.deck.pop();
+        if(this.deck.length === 0){
+            this.deck = this.createDeck();
+            this.shuffle();
         }
 
-        return this.hand;
+        console.log(this.deck)
+        const hand = [];
+        for (let i = 0; i < 2; i++) {
+            hand[i] = this.deck.pop();
+        }
+        console.log(hand)
+        return hand;
     }
 
     renderCards(displayId, numberOfCards, cardAction) {
@@ -48,7 +50,7 @@ class pokerGame {
         display.innerHTML = '';
     
         for (let i = 0; i < numberOfCards; i++) {
-            const tmp = cardAction(); 
+            const tmp = cardAction(i); 
             const cardImage = document.createElement('img');
             cardImage.src = `playCards/${tmp}.svg`; 
             cardImage.alt = tmp;
@@ -59,10 +61,9 @@ class pokerGame {
     }
     
     renderHand() {
-        this.hand = this.dealCards();
-        console.log(this.hand);
+        this.hand = this.dealCards()
     
-        this.renderCards('handDisplay', this.hand.length, () => this.deck.shift());
+        this.renderCards('handDisplay', 2, (i) => this.hand[i]);
     }
     
     renderFlop() {
@@ -83,12 +84,8 @@ class pokerGame {
         this.renderCards('riverDisplay', 1, () => this.deck.pop());
     }
 
-    startGame() {
-        this.renderHand();
-    }
-
 }
 
-const cards = new pokerGame(1);
-cards.startGame();
+const pokergame = new Cards();
+pokergame.renderHand();
 

@@ -10,7 +10,7 @@
 <body id="poker">
     <h1>Poker Game</h1>
     <!--<button id="handButton" onclick="pokerGame.startGame()">Start</button>-->
-    <button id="callButton" onclick="cards.renderFlop()">Call</button> 
+    <button id="callButton" onclick="pokergame.renderFlop()">Call</button> 
     <button id="checkButton" onclick="">Check</button> 
     <button id="foldButton" onclick="">Fold</button> 
     <form id="myForm">
@@ -29,9 +29,11 @@
     </div>
     
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
-    <script src="client.js"></script>
-    <script src="bets.js"></script>
-    <script src="cards.js"></script>
+    <script src="Player.js"></script>
+    <script src="Cards.js"></script>
+    <script src="Client.js"></script>
+    <script src="Bets.js"></script>
+    
     
 </body>
 </html>

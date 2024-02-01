@@ -1,4 +1,4 @@
-class bets {
+class Bets {
     constructor(chips) {
         this.chips = chips;
         this.raiseAmount = 0;
@@ -40,4 +40,4 @@ class bets {
 
 }
 
-const myChipGame = new bets(20000);
+const myChipGame = new Bets(20000);
