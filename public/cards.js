@@ -1,3 +1,4 @@
+
 class Cards {
     constructor() {
         this.deck = [];
@@ -47,4 +48,4 @@ class Cards {
     
 }
 
-
+module.exports = Cards;
