@@ -16,10 +16,11 @@
     <form id="myForm">
         <label for="numberInput">Raise:</label>
         <input type="number" id="raiseInput" step="500">
-        <button type="submit">Raise</button>
+        <button type="button" onclick="raise()">Raise</button>
     </form>
-    <div id="bankDisplay">Chips: <span id="chipCount"></span>
-        
+    <div id="bankDisplay">
+        Chips: <span id="chipCount"></span>
+        Pot: <span id="pot"></span>
     </div>
     <div id="handDisplay"></div>
     <div id="cardContainer">

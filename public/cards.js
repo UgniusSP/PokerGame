@@ -37,7 +37,7 @@ class Cards {
             this.shuffle();
         }
 
-        console.log(this.deck)
+        //console.log(this.deck)
         const hand = [];
         for (let i = 0; i < 2; i++) {
             hand[i] = this.deck.pop();

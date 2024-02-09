@@ -2,42 +2,24 @@ class Bets {
     constructor(chips) {
         this.chips = chips;
         this.raiseAmount = 0;
-        this.bank = 0;
-        this.smallBlind = 250;
-        this.bigBlind = 500;
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-
-        this.updateChipCount();
-        
-        document.getElementById("myForm").addEventListener("submit", this.handleSubmit);
     }
 
-    updateChipCount() {
-        document.getElementById("chipCount").textContent = this.chips;
-    }
-
-    handleSubmit(event) {
-        event.preventDefault(); 
+    raise(){
 
         this.raiseAmount = parseInt(document.getElementById("raiseInput").value, 10);
 
         if (!isNaN(this.raiseAmount) && this.raiseAmount > 0 && this.raiseAmount <= this.chips) {
             this.chips -= this.raiseAmount;
-            this.bank += this.raiseAmount;
-            this.updateChipCount();
             
-            console.log("bank:", this.bank);
-            console.log("Submitted value:", this.raiseAmount);
+            console.log(this.chips);
         } else {
             alert("Invalid input for raise amount.");
         }
-    }
 
-    call(){
-        
+        return this.raiseAmount;
     }
 
 }
 
-const myChipGame = new Bets(20000);
+const bets = new Bets()
+module.exports = Bets;

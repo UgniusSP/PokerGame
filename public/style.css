@@ -16,11 +16,16 @@ h1 {
 
 #chipCount {
   font-weight: bold;
-  color: green; /* or any color you prefer */
+  color: green; 
+}
+
+#pot {
+  font-weight: bold;
+  color: blue; 
 }
 
 #handButton, #callButton, #checkButton, #myForm {
-  background-color: #04AA6D; /* Green */
+  background-color: #04AA6D; 
   border: none;
   border-radius: 25px; 
   color: white;
@@ -32,7 +37,7 @@ h1 {
 }
 
 #foldButton {
-  background-color: rgb(226, 72, 72); /* Green */
+  background-color: rgb(226, 72, 72); 
   border: none;
   border-radius: 25px; 
   color: white;
