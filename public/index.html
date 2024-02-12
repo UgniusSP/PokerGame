@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     
-    <title>Poker Hand Display</title>
+    <title>Poker Game</title>
 </head>
 <body id="poker">
     <h1>Poker Game</h1>
     <!--<button id="handButton" onclick="pokerGame.startGame()">Start</button>-->
-    <button id="callButton" onclick="pokergame.renderFlop()">Call</button> 
+    <button id="callButton" onclick="call()">Call</button> 
     <button id="checkButton" onclick="">Check</button> 
-    <button id="foldButton" onclick="">Fold</button> 
+    <button id="foldButton" onclick="fold()">Fold</button> 
     <form id="myForm">
-        <label for="numberInput">Raise:</label>
-        <input type="number" id="raiseInput" step="500">
-        <button type="button" onclick="raise()">Raise</button>
+        <label for="numberInput">Bet:</label>
+        <input type="number" id="betInput" step="500">
+        <button type="button" onclick="bet()">Bet</button>
     </form>
     <div id="bankDisplay">
         Chips: <span id="chipCount"></span>

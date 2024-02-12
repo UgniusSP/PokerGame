@@ -2,12 +2,12 @@ const socket = io();
 
 const players = {};
 let currentPlayerId;
+const playersAsArray = [];
 
 socket.on('currentPlayerId', (id) => {
     currentPlayerId = id;
-    //console.log(currentPlayerId);
-    displayCards();
-    updateChips(currentPlayerId);
+    
+    updateDisplay();
 })
 
 socket.on('updatePlayers', (backendPlayers) => {
@@ -16,30 +16,48 @@ socket.on('updatePlayers', (backendPlayers) => {
             players[id] = backendPlayers[id];
         } 
         players[id].chips = backendPlayers[id].chips;
+        players[id].folded = backendPlayers[id].folded;
+       
     }
 
     for(const id in players){
         if(!backendPlayers[id]){
             delete players[id];
+            
         }  
     }
 
-    updateChips(currentPlayerId);
+    updateDisplay();
+    
     console.log(players);
+    
 })
 
-socket.on('raise', (pot) => {
+socket.on('bet', (pot) => { // pot value (Pot: ....)
     var potValue = 0;
     potValue += pot;
     document.getElementById("pot").textContent = potValue;
 
+    updateDisplay();
 })
 
-function raise(){
+function fold(){
+    players[currentPlayerId].folded = true;
+    socket.emit('fold');
     
-    const raiseAmount = document.getElementById("raiseInput").value;
+    updateDisplay();
+}
 
-    socket.emit('raise', raiseAmount);
+function bet(){
+    const betAmount = document.getElementById("betInput").value;
+
+    socket.emit('bet', betAmount);
+
+    return betAmount;
+}
+
+function call(){
+    socket.emit('call', callAmount);
 }
 
 function displayCards() {
@@ -48,23 +66,41 @@ function displayCards() {
 
     for (const id in players) {
         const playerInfo = players[id];
-        if (playerInfo.id === currentPlayerId && Array.isArray(playerInfo.hand)) {
+        if (playerInfo.id === currentPlayerId && Array.isArray(playerInfo.hand)) { // dabartinis zaidejas
             for (const card of playerInfo.hand) {
-                const cardImage = document.createElement('img');
-                cardImage.src = `playCards/${card}.svg`;
-                cardImage.alt = card;
-                cardImage.width = 100;
-                display.appendChild(cardImage);
+                if(playerInfo.folded == true){
+                    const cardImage = document.createElement('img');
+                    cardImage.src = `playCards/Card_back_grey.svg.png`;
+                    cardImage.alt = "Fold Card Back";
+                    cardImage.width = 100;
+                    display.appendChild(cardImage);
+                } else {
+                    const cardImage = document.createElement('img');
+                    cardImage.src = `playCards/${card}.svg`;
+                    cardImage.alt = card;
+                    cardImage.width = 100;
+                    display.appendChild(cardImage);
+                }
+                
             }
-        } else if (Array.isArray(playerInfo.hand)) {
+        } else if (Array.isArray(playerInfo.hand)) { // kitas zaidejas
             for (let i = 0; i < playerInfo.hand.length; i++) {
-                const cardImage = document.createElement('img');
-                cardImage.src = `playCards/Card_back_01.svg.png`;
-                cardImage.alt = "Card Back";
-                cardImage.width = 100;
-                display.appendChild(cardImage);
+                if(playerInfo.folded == true){
+                    const cardImage = document.createElement('img');
+                    cardImage.src = `playCards/Card_back_grey.svg.png`;
+                    cardImage.alt = "Fold Card Back";
+                    cardImage.width = 100;
+                    display.appendChild(cardImage);
+                } else {
+                    const cardImage = document.createElement('img');
+                    cardImage.src = `playCards/Card_back_01.svg.png`;
+                    cardImage.alt = "Card Back";
+                    cardImage.width = 100;
+                    display.appendChild(cardImage);
+                }
+                
             }
-        }
+        }  
     }
 }
 
@@ -73,3 +109,9 @@ function updateChips(id){
         document.getElementById("chipCount").textContent = players[id].chips;
     }
 }
+
+function updateDisplay(){
+    displayCards();
+    updateChips(currentPlayerId);
+}
+
