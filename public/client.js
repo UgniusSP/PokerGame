@@ -40,6 +40,23 @@ socket.on('bet', (pot) => { // pot value (Pot: ....)
     updateDisplay();
 })
 
+socket.on('flop', (flop) => {
+    const display = document.getElementById('flopDisplay');
+    display.innerHTML = ' ';
+    
+    console.log(flop);
+
+    for(let i = 0; i < flop.length; i++){
+        const cardImage = document.createElement('img');
+        cardImage.src = `playCards/${flop[i]}.svg`; 
+        cardImage.alt = flop[i];
+        cardImage.width = 100; 
+
+        display.appendChild(cardImage);
+    }
+
+})
+
 function fold(){
     players[currentPlayerId].folded = true;
     socket.emit('fold');

@@ -42,10 +42,21 @@ class Cards {
         for (let i = 0; i < 2; i++) {
             hand[i] = this.deck.pop();
         }
-        console.log(hand)
+        console.log(hand);
         return hand;
+    }
+
+    dealFlop() {
+        this.deck.pop();
+
+        const flop = [];
+        for (let i = 0; i < 3; i++) {
+            flop[i] = this.deck.pop();
+        }
+        return flop;
     }
     
 }
 
 module.exports = Cards;
+

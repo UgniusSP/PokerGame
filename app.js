@@ -32,11 +32,10 @@ io.on('connection', (socket) => {
         chips: 20000,
         hand: cards.dealCards(),
         folded: false,
-        blinds: 0,
         bet: 0,
     }
 
-    assignBlinds(socket.id)
+    //assignBlinds(socket.id)
     
     io.emit('updatePlayers', players)
 
@@ -73,56 +72,74 @@ io.on('connection', (socket) => {
     })
 
     socket.on('call', () => {
-        const currentPlayer = players[socket.id];
         const playerIDs = Object.keys(players);
+
+        const highestBetPlayer = Math.max(...playerIDs.map(id => players[id].id));
+
         const highestBet = Math.max(...playerIDs.map(id => players[id].bet)); // Find the highest bet on the table
+
+        const amountToCall = highestBet - players[socket.id].bet;
     
-        const amountToCall = highestBet - currentPlayer.bet;
-    
-        if (currentPlayer && currentPlayer.chips >= amountToCall && !currentPlayer.folded) {
-            currentPlayer.chips -= amountToCall;
-            currentPlayer.bet += amountToCall;
+        if (players[socket.id] && players[socket.id].chips >= amountToCall && !players[socket.id].folded && highestBetPlayer != socket.id) {
+            players[socket.id].chips -= amountToCall;
+            players[socket.id].bet += amountToCall;
             pot += amountToCall;
 
             io.emit('updatePlayers', players);
             io.emit('bet', pot);
-            currentPlayer.bet = 0
             console.log(amountToCall);
+        }
+
+        var allEq = true;
+        for(let i = 1; i < playerIDs.length; i++){
+            if(players[playerIDs[i]].bet !== players[playerIDs[i-1]].bet){
+                allEq = false;
+                break;
+            }
+        }
+
+        if(allEq){
+            socket.emit('flop', (cards.dealFlop()));
+            players[socket.id].bet = 0;
+            io.emit('updatePlayers', players);
         }
         
     });
     
-
-    console.log(players)
+    assignBlinds(socket.id);
+    //console.log(players)
     
 });
 
 function assignBlinds(playerId) {
     const playerIDs = Object.keys(players);
 
-    players[playerId].blinds = (playerId === playerIDs[smallBlindIndex]) ? smallBlindAmount : (playerId === playerIDs[bigBlindIndex]) ? bigBlindAmount : 0
+    players[playerId].blinds = (playerId === playerIDs[smallBlindIndex]) ? smallBlindAmount : (playerId === playerIDs[bigBlindIndex]) ? bigBlindAmount : 0;
+    
     if(playerIDs.length === 2){
         smallBlindIndex = (smallBlindIndex + 1) % playerIDs.length;
         bigBlindIndex = (bigBlindIndex + 1) % playerIDs.length;
-    } else if(playerIDs.length > 2){
-        
     }
+
+    console.log(playerIDs);
+    console.log(smallBlindIndex);
+    console.log(bigBlindIndex);
 
     if(players[playerId].blinds === smallBlindAmount){
         players[playerId].chips -= smallBlindAmount;
         pot += smallBlindAmount;
-        players[playerId].bet = Number(players[playerId].bet) + Number(smallBlindAmount)
+        players[playerId].bet = Number(players[playerId].bet) + Number(smallBlindAmount);
     } else if(players[playerId].blinds === bigBlindAmount){
         players[playerId].chips -= bigBlindAmount;
         pot += bigBlindAmount;
-        players[playerId].bet = Number(players[playerId].bet) + Number(bigBlindAmount)
+        players[playerId].bet = Number(players[playerId].bet) + Number(bigBlindAmount);
     }
-    io.emit('bet', pot)
-    io.emit('updatePlayers', players)
+    io.emit('bet', pot);
+    io.emit('updatePlayers', players);
 }
 
 server.listen(port, () => {
-    console.log(`Example listening on port ${port}`)
+    console.log(`Example listening on port ${port}`);
 })
 
-console.log('server did load')
+console.log('server did load');
