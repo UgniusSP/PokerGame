@@ -17,13 +17,12 @@ socket.on('updatePlayers', (backendPlayers) => {
         } 
         players[id].chips = backendPlayers[id].chips;
         players[id].folded = backendPlayers[id].folded;
-       
+        players[id].bet = backendPlayers[id].bet;
     }
 
     for(const id in players){
         if(!backendPlayers[id]){
             delete players[id];
-            
         }  
     }
 
@@ -52,12 +51,10 @@ function bet(){
     const betAmount = document.getElementById("betInput").value;
 
     socket.emit('bet', betAmount);
-
-    return betAmount;
 }
 
 function call(){
-    socket.emit('call', callAmount);
+    socket.emit('call');
 }
 
 function displayCards() {
