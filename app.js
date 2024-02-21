@@ -85,7 +85,6 @@ io.on('connection', (socket) => {
             players[socket.id].bet += amountToCall;
             pot += amountToCall;
 
-            io.emit('updatePlayers', players);
             io.emit('bet', pot);
             console.log(amountToCall);
         }
@@ -99,11 +98,11 @@ io.on('connection', (socket) => {
         }
 
         if(allEq){
-            socket.emit('flop', (cards.dealFlop()));
+            io.emit('flop', (cards.dealFlop()));
             players[socket.id].bet = 0;
-            io.emit('updatePlayers', players);
+            
         }
-        
+        io.emit('updatePlayers', players);
     });
     
     assignBlinds(socket.id);

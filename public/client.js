@@ -41,19 +41,9 @@ socket.on('bet', (pot) => { // pot value (Pot: ....)
 })
 
 socket.on('flop', (flop) => {
-    const display = document.getElementById('flopDisplay');
-    display.innerHTML = ' ';
-    
     console.log(flop);
 
-    for(let i = 0; i < flop.length; i++){
-        const cardImage = document.createElement('img');
-        cardImage.src = `playCards/${flop[i]}.svg`; 
-        cardImage.alt = flop[i];
-        cardImage.width = 100; 
-
-        display.appendChild(cardImage);
-    }
+    displayCards(flop.length, flop, 'flopDisplay');
 
 })
 
@@ -74,7 +64,21 @@ function call(){
     socket.emit('call');
 }
 
-function displayCards() {
+function displayCards(length, arr, HTMLdisplay) {
+    const display = document.getElementById(HTMLdisplay);
+    display.innerHTML = ' ';
+
+    for(let i = 0; i < length; i++){
+        const cardImage = document.createElement('img');
+        cardImage.src = `playCards/${arr[i]}.svg`; 
+        cardImage.alt = arr[i];
+        cardImage.width = 100; 
+
+        display.appendChild(cardImage);
+    }
+}
+
+function displayHands() {
     const display = document.getElementById('handDisplay');
     display.innerHTML = '';
 
@@ -125,7 +129,7 @@ function updateChips(id){
 }
 
 function updateDisplay(){
-    displayCards();
+    displayHands();
     updateChips(currentPlayerId);
 }
 
