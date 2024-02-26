@@ -55,6 +55,16 @@ class Cards {
         }
         return flop;
     }
+
+    dealTurn() {
+        this.deck.pop();
+
+        const turn = [];
+
+        turn[0] = this.deck.pop();
+        
+        return turn;
+    }
     
 }
 
