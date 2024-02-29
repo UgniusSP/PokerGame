@@ -52,9 +52,8 @@ io.on('connection', (socket) => {
         players[socket.id].bet = 0;
         players[socket.id].hand = cards.dealCards();
 
-        io.emit('updatePlayers', players);
-
         socket.emit('currentPlayerId', socket.id);
+        io.emit('updatePlayers', players);
 
         socket.on('fold', fold(socket));
         socket.on('bet', bet(socket));
@@ -79,7 +78,7 @@ function fold(socket){
     return () => {
         if (players[socket.id]) {
             players[socket.id].folded = true;
-            io.emit('updatePlayers', players); // Emit updated players object to all clients
+            io.emit('fold', players); 
         }
     };
 }
@@ -91,8 +90,7 @@ function bet(socket){
             players[socket.id].bet = Number(players[socket.id].bet) + Number(betAmount)
             pot = Number(pot) + Number(betAmount)
         
-            io.emit('bet', pot)
-            io.emit('updatePlayers', players)
+            io.emit('bet', {pot, players});
             
             console.log("bet " + players[socket.id].bet)
         }
@@ -114,10 +112,9 @@ function call(socket){
             players[socket.id].bet += amountToCall;
             pot += amountToCall;
 
-            io.emit('bet', pot);
+            io.emit('bet', {pot, players});
             console.log("tocall " + amountToCall);
         }
-        io.emit('updatePlayers', players);
 
     };
 }
@@ -153,8 +150,7 @@ function assignBlinds(id) {
         pot += bigBlindAmount;
     }
     console.log(bigBlindAmount);
-    io.emit('bet', pot);
-    io.emit('updatePlayers', players);
+    io.emit('bet', {pot, players});
 
     if(id === playersObj[smallBlindIndex] || id === playersObj[bigBlindIndex]){
         io.emit('blinds', {smallBlindIndex, bigBlindIndex, playersObj});

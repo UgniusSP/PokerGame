@@ -8,8 +8,7 @@ let bb = false;
 
 socket.on('currentPlayerId', (id) => {
     currentPlayerId = id;
-    
-    updateDisplay();
+
 })
 
 socket.on('updatePlayers', (backendPlayers) => {
@@ -18,9 +17,6 @@ socket.on('updatePlayers', (backendPlayers) => {
             players[id] = backendPlayers[id];
         } 
         players[id].hand = backendPlayers[id].hand;
-        players[id].chips = backendPlayers[id].chips;
-        players[id].folded = backendPlayers[id].folded;
-        players[id].bet = backendPlayers[id].bet;
     }
 
     for(const id in players){
@@ -30,17 +26,31 @@ socket.on('updatePlayers', (backendPlayers) => {
     }
 
     updateDisplay();
+
     console.log(players);
     
 })
 
-socket.on('bet', (pot) => { // pot value (Pot: ....)
+socket.on('bet', (data) => { 
+    for(const id in data.players){
+        players[id].bet = data.players[id].bet;
+        players[id].chips = data.players[id].chips;
+    }
+    
     var potValue = 0;
-    potValue += pot;
-    document.getElementById("pot").textContent = potValue;
+    potValue += data.pot; 
 
-    updateDisplay();
-})
+    updateChips(currentPlayerId);
+    document.getElementById("pot").textContent = data.pot;
+});
+
+socket.on('fold', (backendPlayers) => {
+    for(const id in backendPlayers){
+        players[id].folded = backendPlayers[id].folded;
+    }
+    displayHands();
+});
+
 
 socket.on('flop', (flop) => {
     console.log(flop);
@@ -75,7 +85,6 @@ function fold(){
     players[currentPlayerId].folded = true;
     socket.emit('fold');
     
-    updateDisplay();
 }
 
 function bet(){
@@ -102,48 +111,30 @@ function displayCards(length, arr, HTMLdisplay) {
     }
 }
 
-
 function displayHands() {
     const display = document.getElementById('handDisplay');
+
     display.innerHTML = '';
 
     for (const id in players) {
         const playerInfo = players[id];
-        if (playerInfo.id === currentPlayerId && Array.isArray(playerInfo.hand)) { // dabartinis zaidejas
+        const isCurrentPlayer = playerInfo.id === currentPlayerId;
+        const isFolded = playerInfo.folded;
+
+        if (Array.isArray(playerInfo.hand)) {
             for (const card of playerInfo.hand) {
-                if(playerInfo.folded == true){
-                    const cardImage = document.createElement('img');
+                const cardImage = document.createElement('img');
+                if (isFolded) {
                     cardImage.src = `playCards/Card_back_grey.svg.png`;
                     cardImage.alt = "Fold Card Back";
-                    cardImage.width = 100;
-                    display.appendChild(cardImage);
                 } else {
-                    const cardImage = document.createElement('img');
-                    cardImage.src = `playCards/${card}.svg`;
-                    cardImage.alt = card;
-                    cardImage.width = 100;
-                    display.appendChild(cardImage);
+                    cardImage.src = isCurrentPlayer ? `playCards/${card}.svg` : `playCards/Card_back_01.svg.png`;
+                    cardImage.alt = isCurrentPlayer ? card : "Card Back";
                 }
-                
+                cardImage.width = 100;
+                display.appendChild(cardImage);
             }
-        } else if (Array.isArray(playerInfo.hand)) { // kitas zaidejas
-            for (let i = 0; i < playerInfo.hand.length; i++) {
-                if(playerInfo.folded == true){
-                    const cardImage = document.createElement('img');
-                    cardImage.src = `playCards/Card_back_grey.svg.png`;
-                    cardImage.alt = "Fold Card Back";
-                    cardImage.width = 100;
-                    display.appendChild(cardImage);
-                } else {
-                    const cardImage = document.createElement('img');
-                    cardImage.src = `playCards/Card_back_01.svg.png`;
-                    cardImage.alt = "Card Back";
-                    cardImage.width = 100;
-                    display.appendChild(cardImage);
-                }
-                
-            }
-        }  
+        }
     }
 }
 
@@ -163,5 +154,6 @@ function startGame(){
     document.getElementById("gameplay").style.display = "block";
 
     socket.emit('startGame');
+
 }
 
