@@ -33,13 +33,14 @@ io.on('connection', (socket) => {
 
     playerCount++;
     if(playerCount > playerQuantity){
-        socket.emit('message')
+        socket.emit('message');
         socket.disconnect(true);
         return;
     }
 
     players[socket.id] = {
         id: socket.id,
+        flag: false,
     }
 
     socket.on('disconnect', disconnect(socket));
@@ -51,9 +52,14 @@ io.on('connection', (socket) => {
         players[socket.id].folded = false;
         players[socket.id].bet = 0;
         players[socket.id].hand = cards.dealCards();
-
-        socket.emit('currentPlayerId', socket.id);
+        
         io.emit('updatePlayers', players);
+        socket.emit('currentPlayerId', socket.id);
+
+        if(players[socket.id].flag === false){
+            io.emit('updateDisplay');
+            players[socket.id].flag = true;
+        }
 
         socket.on('fold', fold(socket));
         socket.on('bet', bet(socket));
@@ -62,14 +68,15 @@ io.on('connection', (socket) => {
         assignBlinds(socket.id);
     });
 
+
 });
 
 function disconnect(socket){
     return (reason) => {
-        console.log(reason)
-        delete players[socket.id]
-        pot = 0; // when players dc pot becomes 0 --- its temporary
-        io.emit('updatePlayers', players)
+        console.log(reason);
+        delete players[socket.id];
+        pot = 0; 
+        io.emit('updatePlayers', players);
         playerCount = 0;
     };
 }
@@ -103,7 +110,7 @@ function call(socket){
 
         const highestBetPlayerID = Math.max(...playerIDs.map(id => players[id].id));
 
-        const highestBet = Math.max(...playerIDs.map(id => players[id].bet)); // Find the highest bet on the table
+        const highestBet = Math.max(...playerIDs.map(id => players[id].bet)); // find the highest bet on the table
 
         const amountToCall = highestBet - players[socket.id].bet;
     

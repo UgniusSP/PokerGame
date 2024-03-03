@@ -6,9 +6,12 @@ const playersAsArray = [];
 let sb = false;
 let bb = false;
 
+socket.on('updateDisplay', () => {
+    updateDisplay();
+})
+
 socket.on('currentPlayerId', (id) => {
     currentPlayerId = id;
-
 })
 
 socket.on('updatePlayers', (backendPlayers) => {
@@ -25,11 +28,9 @@ socket.on('updatePlayers', (backendPlayers) => {
         }  
     }
 
-    updateDisplay();
-
     console.log(players);
     
-})
+});
 
 socket.on('bet', (data) => { 
     for(const id in data.players){
@@ -48,7 +49,7 @@ socket.on('fold', (backendPlayers) => {
     for(const id in backendPlayers){
         players[id].folded = backendPlayers[id].folded;
     }
-    displayHands();
+
 });
 
 
@@ -112,9 +113,14 @@ function displayCards(length, arr, HTMLdisplay) {
 }
 
 function displayHands() {
-    const display = document.getElementById('handDisplay');
+    const display = document.querySelector('.cardContainer');
+    const tempImage = document.getElementsByClassName('card');
 
-    display.innerHTML = '';
+    if(tempImage.length !== 0){
+        for(let i = tempImage.length - 1; i >= 0; i--){ // delete cards which were printed earlier, we loop backwards because of automatically restructuring DOM
+            tempImage[i].parentNode.removeChild(tempImage[i]);
+        }
+    }
 
     for (const id in players) {
         const playerInfo = players[id];
@@ -127,9 +133,11 @@ function displayHands() {
                 if (isFolded) {
                     cardImage.src = `playCards/Card_back_grey.svg.png`;
                     cardImage.alt = "Fold Card Back";
+                    cardImage.className = 'card';
                 } else {
                     cardImage.src = isCurrentPlayer ? `playCards/${card}.svg` : `playCards/Card_back_01.svg.png`;
                     cardImage.alt = isCurrentPlayer ? card : "Card Back";
+                    cardImage.className = 'card';
                 }
                 cardImage.width = 100;
                 display.appendChild(cardImage);
@@ -154,6 +162,5 @@ function startGame(){
     document.getElementById("gameplay").style.display = "block";
 
     socket.emit('startGame');
-
 }
 
