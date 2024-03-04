@@ -75,6 +75,10 @@ h1 {
   width: 4.5%;
 }
 
-#flopDisplay, #turnDisplay, #riverDisplay {
-  display: inline;
+.cardFTR {
+  max-width: 100%;
+  top: 50%;
+  height: auto;
+  position: absolute;
+  width: 3%;
 }

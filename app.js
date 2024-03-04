@@ -88,13 +88,13 @@ function fold(socket){
 function bet(socket){
     return (betAmount) => {
         if (players[socket.id] && betAmount > 0 && betAmount <= players[socket.id].chips && players[socket.id].folded == false){
-            players[socket.id].chips -= betAmount
-            players[socket.id].bet = Number(players[socket.id].bet) + Number(betAmount)
-            pot = Number(pot) + Number(betAmount)
+            players[socket.id].chips -= betAmount;
+            players[socket.id].bet = Number(players[socket.id].bet) + Number(betAmount);
+            pot = Number(pot) + Number(betAmount);
         
             io.emit('bet', {pot, players});
             
-            console.log("bet " + players[socket.id].bet)
+            console.log("bet " + players[socket.id].bet);
         }
     };
 }
@@ -103,13 +103,11 @@ function call(socket){
     return () => {
         const playerIDs = Object.keys(players);
 
-        const highestBetPlayerID = Math.max(...playerIDs.map(id => players[id].id));
-
         const highestBet = Math.max(...playerIDs.map(id => players[id].bet)); // find the highest bet on the table
 
         const amountToCall = highestBet - players[socket.id].bet;
     
-        if (players[socket.id] && players[socket.id].chips >= amountToCall && !players[socket.id].folded && highestBetPlayerID != socket.id) {
+        if (players[socket.id] && players[socket.id].chips >= amountToCall && !players[socket.id].folded) {
             players[socket.id].chips -= amountToCall;
             players[socket.id].bet += amountToCall;
             pot += amountToCall;
@@ -118,20 +116,23 @@ function call(socket){
             console.log("tocall " + amountToCall);
         }
 
+        var allEq = true;
+        for(let i = 1; i < playerIDs.length; i++){
+            if(players[playerIDs[i]].bet !== players[playerIDs[i-1]].bet){
+                allEq = false;
+                break;
+            }
+        }
+
+        if(allEq){
+            socket.emit('flop', (cards.dealFlop()));
+            io.emit('flop', (cards.dealFlop()));
+            players[socket.id].bet = 0;
+            io.emit('updatePlayers', players);
+
+        }
+
     };
-}
-
-function nextPlayer(){
-    const playersObj = Object.keys(players);
-    var currentPlayer = 0;
-    currentPlayer = (currentPlayer + 1) % playersObj.length;
-    
-    //console.log(currentPlayer);
-    return currentPlayer - 1;
-}
-
-function assignPlayerTurns(){
-
 }
 
 function assignBlinds(id) {

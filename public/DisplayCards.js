@@ -50,16 +50,26 @@ function displayHands() {
 }
 
  function displayCards(length, arr, HTMLdisplay) {
-    const display = document.getElementById(HTMLdisplay);
-    display.innerHTML = ' ';
+    const display = document.querySelector('.cardContainer');
+    const tempImage = document.getElementsByClassName('cardFTR');
+
+    const cardSpacing = 3; 
+    var currentLeft = 44; 
+
+    if(tempImage.length !== 0){
+        for(let i = tempImage.length - 1; i >= 0; i--){ // delete cards which were printed earlier, we loop backwards because of automatically restructuring DOM
+            tempImage[i].parentNode.removeChild(tempImage[i]);
+        }
+    }
 
     for(let i = 0; i < length; i++){
         const cardImage = document.createElement('img');
         cardImage.src = `playCards/${arr[i]}.svg`; 
         cardImage.alt = arr[i];
-        cardImage.width = 100; 
+        dynamicFlopTurnRiver(cardImage, currentLeft);
 
         display.appendChild(cardImage);
+        currentLeft += cardSpacing;
     }
 }
 
@@ -68,5 +78,12 @@ function dynamicHand(cardImage, currentLeft, topValue){
     cardImage.style.left = currentLeft + '%';
     cardImage.style.top = topValue;
     cardImage.style.transform = 'translate(-50%, -50%)';
-    
+ 
+}
+
+function dynamicFlopTurnRiver(cardImage, currentLeft){
+    cardImage.className = 'cardFTR';
+    cardImage.style.left = currentLeft + '%';
+    cardImage.style.transform = 'translate(-50%, -50%)';
+ 
 }

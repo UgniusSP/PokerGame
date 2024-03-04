@@ -49,11 +49,10 @@ socket.on('fold', (backendPlayers) => {
 
 });
 
-
 socket.on('flop', (flop) => {
     console.log(flop);
 
-    displayCards(flop.length, flop, 'flopDisplay');
+    displayCards(flop.length, flop, '.cardContainer');
 
 })
 
