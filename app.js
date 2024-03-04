@@ -40,7 +40,6 @@ io.on('connection', (socket) => {
 
     players[socket.id] = {
         id: socket.id,
-        flag: false,
     }
 
     socket.on('disconnect', disconnect(socket));
@@ -53,13 +52,9 @@ io.on('connection', (socket) => {
         players[socket.id].bet = 0;
         players[socket.id].hand = cards.dealCards();
         
-        io.emit('updatePlayers', players);
+        
         socket.emit('currentPlayerId', socket.id);
-
-        if(players[socket.id].flag === false){
-            io.emit('updateDisplay');
-            players[socket.id].flag = true;
-        }
+        io.emit('updatePlayers', players);
 
         socket.on('fold', fold(socket));
         socket.on('bet', bet(socket));

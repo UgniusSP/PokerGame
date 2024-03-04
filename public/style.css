@@ -1,5 +1,6 @@
 html, body {
   min-height: 100%;
+  resize: both;
 }
 
 h1 {
@@ -60,8 +61,6 @@ h1 {
 
 .tableImage {
   position: relative;
-  top: 0;
-  left: 0;
   border: 1px red solid;
   display: block;
   margin-left: auto;
@@ -69,17 +68,11 @@ h1 {
   width: 60%;
 }
 
-#handDisplay {
-  padding-top: 25px;
-  text-align: center;
-}
-
-#handDisplay img {
-  margin-right: 5px; 
-}
-
-#handDisplay img:nth-child(2n) {
-  margin-right: 100px; 
+.card {
+  max-width: 100%;
+  height: auto;
+  position: absolute;
+  width: 4.5%;
 }
 
 #flopDisplay, #turnDisplay, #riverDisplay {
