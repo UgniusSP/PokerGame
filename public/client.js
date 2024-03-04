@@ -16,6 +16,7 @@ socket.on('updatePlayers', (backendPlayers) => {
             players[id] = backendPlayers[id];
         } 
         players[id].hand = backendPlayers[id].hand;
+        players[id].bet = backendPlayers[id].bet;
     }
 
     for(const id in players){
@@ -46,7 +47,7 @@ socket.on('fold', (backendPlayers) => {
     for(const id in backendPlayers){
         players[id].folded = backendPlayers[id].folded;
     }
-
+    displayHands();
 });
 
 socket.on('flop', (flop) => {

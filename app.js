@@ -24,6 +24,7 @@ const smallBlindAmount = 500;
 const bigBlindAmount = 1000;
 let smallBlindIndex = 0;
 let bigBlindIndex = 1;
+let preflop = true;
 
 let playerQuantity = 2;
 let playerCount = 0;
@@ -51,7 +52,7 @@ io.on('connection', (socket) => {
         players[socket.id].folded = false;
         players[socket.id].bet = 0;
         players[socket.id].hand = cards.dealCards();
-        
+        players[socket.id].blind = 0;
         
         socket.emit('currentPlayerId', socket.id);
         io.emit('updatePlayers', players);
@@ -87,9 +88,15 @@ function fold(socket){
 
 function bet(socket){
     return (betAmount) => {
-        if (players[socket.id] && betAmount > 0 && betAmount <= players[socket.id].chips && players[socket.id].folded == false){
+
+        if(preflop) {
+            players[socket.id].blind = players[socket.id].bet;
+            preflop = false;
+        }
+
+        if (players[socket.id] && betAmount >= bigBlindAmount && betAmount <= players[socket.id].chips && !players[socket.id].folded){
             players[socket.id].chips -= betAmount;
-            players[socket.id].bet = Number(players[socket.id].bet) + Number(betAmount);
+            players[socket.id].bet = Number(players[socket.id].bet) - Number(players[socket.id].blind) + Number(betAmount);
             pot = Number(pot) + Number(betAmount);
         
             io.emit('bet', {pot, players});
@@ -125,11 +132,14 @@ function call(socket){
         }
 
         if(allEq){
-            socket.emit('flop', (cards.dealFlop()));
             io.emit('flop', (cards.dealFlop()));
-            players[socket.id].bet = 0;
-            io.emit('updatePlayers', players);
 
+            for(var i in players){
+                players[i].bet = 0;     // zero all elements after call
+            }
+
+            io.emit('updatePlayers', players);
+            
         }
 
     };
@@ -152,13 +162,13 @@ function assignBlinds(id) {
         players[id].chips -= bigBlindAmount;
         pot += bigBlindAmount;
     }
-    console.log(bigBlindAmount);
+   
     io.emit('bet', {pot, players});
 
     if(id === playersObj[smallBlindIndex] || id === playersObj[bigBlindIndex]){
         io.emit('blinds', {smallBlindIndex, bigBlindIndex, playersObj});
     }
-    
+
 }
 
 server.listen(port, () => {
