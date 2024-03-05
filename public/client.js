@@ -79,6 +79,7 @@ socket.on('blinds', ({smallBlindIndex, bigBlindIndex, playersObj}) => {
     
 })
 
+
 function fold(){
     players[currentPlayerId].folded = true;
     socket.emit('fold');

@@ -1,4 +1,3 @@
-
 function displayHands() {
     const display = document.querySelector('.cardContainer');
     const tempImage = document.getElementsByClassName('card');
@@ -49,7 +48,7 @@ function displayHands() {
     }
 }
 
- function displayCards(length, arr, HTMLdisplay) {
+ function displayCards(length, arr) {
     const display = document.querySelector('.cardContainer');
     const tempImage = document.getElementsByClassName('cardFTR');
 
